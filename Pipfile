@@ -10,6 +10,7 @@ python-dotenv = "*"
 pillow = "*"
 django-debug-toolbar = "*"
 djangorestframework = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
