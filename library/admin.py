@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from library.models import Book, Author, Genre
 from library.filters import QuantityFilter
@@ -19,8 +19,6 @@ class AuthorAdmin(admin.ModelAdmin):
     ordering = ('last_name', 'first_name', 'date_of_birth')
 
 
-from django.contrib import admin
-
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'display_genre', 'publication_date', 'quantity', 'total_borrowed',
@@ -33,7 +31,10 @@ class BookAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return (super().get_queryset(request)
                 .select_related('author')
-                .prefetch_related('genre', 'transactions', 'reservations'))
+                .prefetch_related('genre', 'transactions', 'reservations')
+                .annotate(
+                    currently_borrowed_count=Count('transactions', filter=Q(transactions__return_date__isnull=True))
+        ))
 
     def display_genre(self, book):
         return ", ".join([genre.name for genre in book.genre.all()])
@@ -48,5 +49,5 @@ class BookAdmin(admin.ModelAdmin):
     reservations_count.short_description = 'Reserved'
 
     def currently_borrowed(self, book):
-        return book.transactions.filter(return_date__isnull=True).count()
+        return book.currently_borrowed_count
     currently_borrowed.short_description = 'Currently Borrowed'
