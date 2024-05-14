@@ -32,8 +32,8 @@ class Author(models.Model):
 
 
 class Book(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name=_('Author'))
-    genre = models.ManyToManyField(Genre, verbose_name=_('Genre'))
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name=_('Author'), related_name='books')
+    genre = models.ManyToManyField(Genre, verbose_name=_('Genre'), related_name='books')
     title = models.CharField(max_length=100, verbose_name=_('Title'))
     publication_date = models.DateField(verbose_name=_('Publication date'))
     description = models.TextField(verbose_name=_('Description'))

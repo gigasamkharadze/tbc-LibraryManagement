@@ -1,5 +1,8 @@
 from django.contrib import admin
+from django.db.models import Count
+
 from library.models import Book, Author, Genre
+from library.filters import QuantityFilter
 
 
 @admin.register(Genre)
@@ -20,12 +23,25 @@ class AuthorAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('author', 'display_genre', 'title', 'publication_date', 'quantity')
-    search_fields = ('author', 'title', 'publication_date', 'quantity')
-    list_filter = ('author', 'title', 'publication_date', 'quantity')
+    list_display = ('title', 'author', 'display_genre', 'publication_date', 'quantity', 'total_borrowed',
+                    'reservations_count', 'currently_borrowed')
+    search_fields = ('title', 'author__first_name', 'author__last_name', 'genre__name', 'publication_date', 'quantity')
+    list_filter = (QuantityFilter, 'genre', 'publication_date')
     ordering = ('title', 'publication_date', 'author', 'quantity')
+    list_per_page = 100
 
-    def display_genre(self, obj):
-        return ", ".join([genre.name for genre in obj.genre.all()])
-
+    def display_genre(self, book: Book):
+        return ", ".join([genre.name for genre in book.genre.all()])
     display_genre.short_description = 'Genre'
+
+    def total_borrowed(self, book: Book):
+        return book.transactions.count()
+    total_borrowed.short_description = 'total borrowed'
+
+    def reservations_count(self, book: Book):
+        return book.reservations.count()
+    reservations_count.short_description = 'reserved'
+
+    def currently_borrowed(self, book: Book):
+        return book.transactions.filter(return_date__isnull=True).count()
+    currently_borrowed.short_description = 'currently borrowed'
