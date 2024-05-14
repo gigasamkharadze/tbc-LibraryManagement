@@ -24,7 +24,7 @@ class BookAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'display_genre', 'publication_date', 'quantity', 'total_borrowed',
                     'reservations_count', 'currently_borrowed')
     search_fields = ('title', 'author__first_name', 'author__last_name', 'genre__name', 'publication_date', 'quantity')
-    list_filter = ('genre', 'publication_date')
+    list_filter = (QuantityFilter, 'genre', 'publication_date')
     ordering = ('title', 'publication_date', 'author', 'quantity')
     list_per_page = 100
 
