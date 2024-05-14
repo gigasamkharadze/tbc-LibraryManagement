@@ -9,6 +9,7 @@ psycopg2-binary = "*"
 python-dotenv = "*"
 pillow = "*"
 django-debug-toolbar = "*"
+djangorestframework = "*"
 
 [dev-packages]
 
