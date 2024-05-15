@@ -46,4 +46,3 @@ class Book(models.Model):
         verbose_name = _('Book')
         verbose_name_plural = _('Books')
         ordering = ['title', 'publication_date', 'author', 'quantity']
-

@@ -9,7 +9,7 @@ from reservations.serializers import CreateReservationSerializer
 from library.models import Book, Author, Genre
 from library.pagination import BookPagination
 from library.permissions import IsLibrarian, IsBorrower
-from library.serializers import BookSerializer, AuthorSerializer, GenreSerializer, UpdateBookBorrowerSerializer
+from library.serializers import BookSerializer, AuthorSerializer, GenreSerializer
 
 
 class GenreViewSet(ModelViewSet):
@@ -60,6 +60,7 @@ class ReserveBookView(
 
     queryset = Reservation.objects.all()
     serializer_class = CreateReservationSerializer
+    permission_classes = [IsBorrower]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
