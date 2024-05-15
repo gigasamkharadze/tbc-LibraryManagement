@@ -9,7 +9,7 @@ class Reservation(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name=_('Book'), related_name='reservations')
     borrower = models.ForeignKey(Borrower, on_delete=models.CASCADE, verbose_name=_('Borrower'),
                                  related_name='reservations')
-    date = models.DateField(verbose_name=_('Date'))
+    date = models.DateTimeField(auto_now_add=True, verbose_name=_('Date'))
     status = models.IntegerField(choices=StatusChoices.choices, default=StatusChoices.ACTIVE, verbose_name=_('Status'))
 
     def __str__(self):
