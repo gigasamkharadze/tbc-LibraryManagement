@@ -3,7 +3,6 @@ from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-import users.models
 from reservations.models import Reservation
 from reservations.serializers import CreateReservationSerializer
 from library.models import Book, Author, Genre
