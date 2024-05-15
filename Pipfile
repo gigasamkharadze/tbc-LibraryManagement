@@ -11,6 +11,7 @@ pillow = "*"
 django-debug-toolbar = "*"
 djangorestframework = "*"
 drf-yasg = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
