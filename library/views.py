@@ -43,8 +43,8 @@ class BookViewSet(ModelViewSet):
         return Book.objects.all().select_related('author').prefetch_related('genre')
 
     def get_serializer_class(self):
-        print(self.request.user.profile)
-        if self.action == 'partial_update' and self.request.user.profile == users.models.User.UserProfile.BORROWER:
+        if (self.action == 'partial_update' and
+                self.request.user.is_authenticated and self.request.user.profile == users.models.User.UserProfile.BORROWER):
             return UpdateBookBorrowerSerializer
         return BookSerializer
 
