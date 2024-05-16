@@ -1,6 +1,9 @@
+from django.db.models import Count
+from rest_framework.decorators import action as action_decorator
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from reservations.models import Reservation
@@ -51,6 +54,14 @@ class BookViewSet(ModelViewSet):
         else:
             permission_classes = [IsAdminUser, IsLibrarian]
         return [permission() for permission in permission_classes]
+
+    @action_decorator(detail=False, methods=['get'], url_path='top-10')
+    def top_10(self, request, *args, **kwargs):
+        books = (Book.objects.all().
+                 annotate(transactions_count=Count('transactions')).
+                 order_by('-transactions_count')[:10])
+        serializer = self.get_serializer(books, many=True)
+        return Response(serializer.data)
 
 
 class ReserveBookView(
