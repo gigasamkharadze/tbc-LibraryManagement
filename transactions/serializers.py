@@ -16,11 +16,12 @@ class ListTransactionSerializer(serializers.ModelSerializer):
 
 
 class CreateTransactionSerializer(serializers.ModelSerializer):
-    checkout_date = serializers.DateField(format='%Y-%m-%d')
+    checkout_date = serializers.DateField()
+    due_date = serializers.DateField()
 
     class Meta:
         model = Transaction
-        fields = ['book', 'borrower', 'checkout_date']
+        fields = ['book', 'borrower', 'checkout_date', 'due_date']
 
     def create(self, validated_data):
         with transaction_db.atomic():
