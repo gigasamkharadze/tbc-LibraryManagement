@@ -1,5 +1,5 @@
 from django.db.models import Count, F
-from rest_framework.decorators import action as action_decorator
+from rest_framework.decorators import action as action_decorator, api_view
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAdminUser, AllowAny
@@ -107,3 +107,14 @@ class ReserveBookView(CreateModelMixin, GenericViewSet):
     @property
     def allowed_methods(self):
         return ['POST']
+
+
+@api_view(['GET'])
+def top_100_late_returner_borrowers(request):
+    borrowers = (Book.objects.all().
+                 filter(transactions__return_date__isnull=False).
+                 filter(transactions__return_date__gt=F('transactions__due_date')).
+                 values('transactions__borrower').
+                 annotate(late_returned_count=Count('transactions__borrower')).
+                 order_by('-late_returned_count')[:100])
+    return Response(borrowers)
