@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, F
 from rest_framework.decorators import action as action_decorator
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import CreateModelMixin
@@ -63,11 +63,18 @@ class BookViewSet(ModelViewSet):
         serializer = self.get_serializer(books, many=True)
         return Response(serializer.data)
 
+    @action_decorator(detail=False, methods=['get'], url_path='top-100-late-returned')
+    def top_100_late_returned(self, request, *args, **kwargs):
+        books = (Book.objects.all().
+                 filter(transactions__return_date__isnull=False).
+                 filter(transactions__return_date__gt=F('transactions__due_date')).
+                 annotate(late_returned_count=Count('transactions')).
+                 order_by('-late_returned_count')[:100])
+        serializer = self.get_serializer(books, many=True)
+        return Response(serializer.data)
 
-class ReserveBookView(
-        CreateModelMixin,
-        GenericViewSet):
 
+class ReserveBookView(CreateModelMixin, GenericViewSet):
     queryset = Reservation.objects.all()
     serializer_class = CreateReservationSerializer
     permission_classes = [IsBorrower]
