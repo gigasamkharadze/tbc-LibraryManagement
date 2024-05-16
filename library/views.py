@@ -73,6 +73,23 @@ class BookViewSet(ModelViewSet):
         serializer = self.get_serializer(books, many=True)
         return Response(serializer.data)
 
+    @action_decorator(detail=True, methods=['get'], url_path='borrowed-count')
+    def borrowed_count(self, request, *args, **kwargs):
+        book = self.get_object()
+        borrowed_count = book.transactions.count()
+        return Response({'borrowed_count': borrowed_count})
+
+    @action_decorator(detail=True, methods=['get'], url_path='top-100-late-returner-borrowers')
+    def top_100_late_returner_borrowers(self, request, *args, **kwargs):
+        book = self.get_object()
+        borrowers = (book.transactions.
+                     filter(return_date__isnull=False).
+                     filter(return_date__gt=F('due_date')).
+                     values('borrower').
+                     annotate(late_returned_count=Count('borrower')).
+                     order_by('-late_returned_count')[:100])
+        return Response(borrowers)
+
 
 class ReserveBookView(CreateModelMixin, GenericViewSet):
     queryset = Reservation.objects.all()
