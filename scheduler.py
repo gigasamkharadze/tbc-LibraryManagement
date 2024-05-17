@@ -5,4 +5,5 @@ from django.core.management import call_command
 def start_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(call_command, 'interval', hours=1, args=['update_reservations'])
+    scheduler.add_job(call_command, 'interval', days=1, args=['notify_overdue'])
     scheduler.start()
