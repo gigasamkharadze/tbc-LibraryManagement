@@ -12,7 +12,6 @@ from library.models import Book, Author, Genre
 from library.pagination import BookPagination
 from library.permissions import IsLibrarian, IsBorrower
 from library.serializers import BookSerializer, AuthorSerializer, GenreSerializer
-from users.serializers import BorrowerSerializer
 
 
 class GenreViewSet(ModelViewSet):
@@ -43,11 +42,14 @@ class BookViewSet(ModelViewSet):
     serializer_class = BookSerializer
     search_fields = ['title', 'author__first_name', 'author__last_name']
     filter_backends = [SearchFilter, OrderingFilter]
-    ordering_fields = ['id', 'title', 'author__first_name', 'author__last_name', 'published_date']
+    ordering_fields = ['title', 'author__first_name', 'author__last_name', 'published_date', 'demand']
     pagination_class = BookPagination
 
     def get_queryset(self):
-        return Book.objects.all().select_related('author').prefetch_related('genre')
+        return (Book.objects.all()
+                .select_related('author')
+                .prefetch_related('genre')
+                .annotate(demand=Count('transactions')))
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
