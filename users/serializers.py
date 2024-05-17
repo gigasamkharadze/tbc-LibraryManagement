@@ -14,3 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         Borrower.objects.create(user=user)
         return user
+
+
+class BorrowerSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(source='user.email')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+
+    class Meta:
+        model = Borrower
+        fields = ['first_name', 'last_name', 'email']
+        extra_kwargs = {'photo': {'required': False}}

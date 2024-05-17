@@ -12,6 +12,7 @@ from library.models import Book, Author, Genre
 from library.pagination import BookPagination
 from library.permissions import IsLibrarian, IsBorrower
 from library.serializers import BookSerializer, AuthorSerializer, GenreSerializer
+from users.serializers import BorrowerSerializer
 
 
 class GenreViewSet(ModelViewSet):
@@ -79,17 +80,6 @@ class BookViewSet(ModelViewSet):
         borrowed_count = book.transactions.count()
         return Response({'borrowed_count': borrowed_count})
 
-    @action_decorator(detail=True, methods=['get'], url_path='top-100-late-returner-borrowers')
-    def top_100_late_returner_borrowers(self, request, *args, **kwargs):
-        book = self.get_object()
-        borrowers = (book.transactions.
-                     filter(return_date__isnull=False).
-                     filter(return_date__gt=F('due_date')).
-                     values('borrower').
-                     annotate(late_returned_count=Count('borrower')).
-                     order_by('-late_returned_count')[:100])
-        return Response(borrowers)
-
 
 class ReserveBookView(CreateModelMixin, GenericViewSet):
     queryset = Reservation.objects.all()
@@ -111,10 +101,15 @@ class ReserveBookView(CreateModelMixin, GenericViewSet):
 
 @api_view(['GET'])
 def top_100_late_returner_borrowers(request):
-    borrowers = (Book.objects.all().
-                 filter(transactions__return_date__isnull=False).
-                 filter(transactions__return_date__gt=F('transactions__due_date')).
-                 values('transactions__borrower').
-                 annotate(late_returned_count=Count('transactions__borrower')).
-                 order_by('-late_returned_count')[:100])
+    borrowers = (Book.objects.all()
+                 .filter(transactions__return_date__isnull=False)
+                 .filter(transactions__return_date__gt=F('transactions__due_date'))
+                 .annotate(
+                    first_name=F('transactions__borrower__user__first_name'),
+                    last_name=F('transactions__borrower__user__last_name'),
+                    email=F('transactions__borrower__user__email')
+                )
+                 .values('first_name', 'last_name', 'email')
+                 .annotate(late_returned_count=Count('transactions__borrower'))
+                 .order_by('-late_returned_count')[:100])
     return Response(borrowers)
