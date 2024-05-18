@@ -1,7 +1,6 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 import requests
-from django.http import JsonResponse
 
 
 def home(request):
@@ -54,3 +53,12 @@ def register(request):
                 'error': response.json(),
             })
     return render(request, 'frontend/register.html')
+
+
+def logout_view(request):
+    if 'access' in request.session:
+        del request.session['access']
+    if 'refresh' in request.session:
+        del request.session['refresh']
+    logout(request)
+    return redirect('home')

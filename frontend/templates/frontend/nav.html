@@ -2,7 +2,7 @@
         <div class="container mx-auto flex justify-between items-center">
             <a href='{% url 'home' %}' class="text-xl font-semibold">Library</a>
             {% if user.is_authenticated %}
-                <a href='#' class="hover:text-gray-400 text-base font-semibold">Logout</a>
+                <a href='{% url 'logout' %}' class="hover:text-gray-400 text-base font-semibold">Logout</a>
             {% else %}
                 <div class="space-x-4">
                     <a href="{% url 'login' %}" class="hover:text-gray-400 text-base font-semibold">Login</a>
