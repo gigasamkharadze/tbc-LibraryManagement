@@ -29,3 +29,28 @@ def login_view(request):
             'error': 'Invalid username or password',
         })
     return render(request, 'frontend/login.html')
+
+
+def register(request):
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        password = request.POST['password']
+        personal_number = request.POST['personal_number']
+        birth_date = request.POST['birth_date']
+        response = requests.post('http://localhost:8000/api/users/register/', data={
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'password': password,
+            'personal_number': personal_number,
+            'birth_date': birth_date,
+        })
+        if response.status_code == 201:
+            return redirect('login')
+        else:
+            return render(request, 'frontend/register.html', {
+                'error': response.json(),
+            })
+    return render(request, 'frontend/register.html')

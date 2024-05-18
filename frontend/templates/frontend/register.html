@@ -1,0 +1,72 @@
+{% extends 'frontend/base.html' %}
+
+{% block header %}
+    {% include 'frontend/nav.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto flex justify-center mt-8">
+        <div class="w-1/3">
+            <h1 class="text-2xl font-semibold text-gray-700 mb-4">Register</h1>
+            <form action="{% url 'register-frontend' %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                    <input 
+                        type="text" 
+                        name="first_name" 
+                        id="first_name" 
+                        class="border {{ error|yesno:'border-red-500, border-gray-300' }} mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                    <input 
+                        type="text" 
+                        name="last_name" 
+                        id="last_name" 
+                        class="border {{ error|yesno:'border-red-500, border-gray-300' }} mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input 
+                        type="email" 
+                        name="email" 
+                        id="email" 
+                        class="border {{ error|yesno:'border-red-500, border-gray-300' }} mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="password" 
+                        class="border {{ error|yesno:'border-red-500, border-gray-300' }} mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="personal_number" class="block text-sm font-medium text-gray-700">Personal Number</label>
+                    <input 
+                        type="text" 
+                        name="personal_number" 
+                        id="personal_number" 
+                        maxlength="11"
+                        class="border {{ error|yesno:'border-red-500, border-gray-300' }} mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="birth_date" class="block text-sm font-medium text-gray-700">Birth Date</label>
+                    <input 
+                        type="date" 
+                        name="birth_date" 
+                        id="birth_date" 
+                        class="border {{ error|yesno:'border-red-500, border-gray-300' }} mt-1 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                        required>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700">Register</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
