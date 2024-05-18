@@ -5,7 +5,7 @@
                 <a href='#' class="hover:text-gray-400 text-base font-semibold">Logout</a>
             {% else %}
                 <div class="space-x-4">
-                    <a href="#" class="hover:text-gray-400 text-base font-semibold">Login</a>
+                    <a href="{% url 'login' %}" class="hover:text-gray-400 text-base font-semibold">Login</a>
                     <a href="#" class="hover:text-gray-400 text-base font-semibold">Register</a>
                 </div>
             {% endif %}
