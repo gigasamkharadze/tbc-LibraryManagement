@@ -16,6 +16,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('profile', 3)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
@@ -33,13 +34,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     class UserProfile(models.IntegerChoices):
         LIBRARIAN = 1, _('Librarian')
         BORROWER = 2, _('Borrower')
+        ADMIN = 3, _('Admin')
 
-    profile = models.IntegerField(choices=UserProfile.choices, default=UserProfile.BORROWER, verbose_name=_('profile'))
+    profile = models.IntegerField(choices=UserProfile.choices, default=UserProfile.LIBRARIAN, verbose_name=_('profile'))
 
     objects = UserManager()
 
+    username = None
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'personal_number', 'birth_date']
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

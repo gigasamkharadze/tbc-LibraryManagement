@@ -9,6 +9,7 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
+            serializer.validated_data['profile'] = 2
             serializer.save()
             return Response({"message": "User created successfully"}, status=201)
         else:
