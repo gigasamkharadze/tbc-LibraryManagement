@@ -64,11 +64,12 @@ def logout_view(request):
     return redirect('home')
 
 
-def books(request):
+def books(request, page_number):
     if 'access' in request.session:
         headers = {'Authorization': f'Bearer {request.session["access"]}'}
         try:
-            response = requests.get('http://localhost:8000/api/library/books/', headers=headers)
+            response = requests.get(f'http://localhost:8000/api/library/books/?page={page_number}',
+                                    headers=headers)
             response.raise_for_status()
         except requests.exceptions.RequestException:
             logout(request)
@@ -78,11 +79,17 @@ def books(request):
 
         if response.status_code == 200:
             all_books = response.json()['results']
+            next_page = (page_number + 1) if response.json()['next'] else None
+            previous_page = (page_number - 1) if response.json()['previous'] else None
         else:
             all_books = []
+            next_page = None
+            previous_page = None
         return render(request, 'frontend/books.html', {
             'user': request.user,
             'books': all_books,
+            'next_page': next_page,
+            'previous_page': previous_page,
         })
     else:
         return redirect('login')
@@ -123,7 +130,7 @@ def reserve_book(request, book_id):
                 'message': 'An error occurred while reserving the book.'
             })
         if response.status_code == 201:
-            return redirect('books')
+            return redirect('books', page_number=1)
         else:
             print('Error: 2')
             return render(request, 'frontend/error.html', {
