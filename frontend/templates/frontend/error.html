@@ -1,0 +1,17 @@
+{% extends 'frontend/base.html' %}
+
+{% block header %}
+    {% include 'frontend/nav.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto flex justify-center mt-8">
+        <div class="w-1/3">
+            <div class="bg-white shadow-md rounded-md p-4">
+                <h2 class="text-lg font-semibold text-gray-700">Error</h2>
+                <p class="text-sm text-gray-500">An error occurred</p>
+                <a href="{% url 'home' %}" class="mt-4 inline-block text-white py-2 px-4 rounded" style="background-color: rgb(35 69 94);">Go to Home</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
