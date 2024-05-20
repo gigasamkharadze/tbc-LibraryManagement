@@ -95,7 +95,6 @@ def book(request, book_id):
             response = requests.get(f'http://localhost:8000/api/library/books/{book_id}/', headers=headers)
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
-            logout(request)
             return render(request, 'frontend/error.html', {
                 'message': 'An error occurred while fetching the book.'
             })
@@ -110,3 +109,25 @@ def book(request, book_id):
         })
     else:
         return redirect('login')
+
+
+def reserve_book(request, book_id):
+    if 'access' in request.session:
+        headers = {'Authorization': f'Bearer {request.session["access"]}'}
+        try:
+            response = requests.post(f'http://localhost:8000/api/library/books/{book_id}/reserve/',
+                                     headers=headers)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return render(request, 'frontend/error.html', {
+                'message': 'An error occurred while reserving the book.'
+            })
+        if response.status_code == 201:
+            return redirect('books')
+        else:
+            print('Error: 2')
+            return render(request, 'frontend/error.html', {
+                'message': 'An error occurred while reserving the book.'
+            })
+    return redirect('login')
+

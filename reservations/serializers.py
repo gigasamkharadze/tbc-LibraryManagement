@@ -6,11 +6,11 @@ from reservations.models import Reservation
 class CreateReservationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         book_id = self.context['book_id']
-        borrower = self.context['request'].user
+        user = self.context['request'].user
         status = validated_data.get('status', StatusChoices.ACTIVE)
         reservation = Reservation.objects.create(
             book_id=book_id,
-            borrower_id=borrower.id,
+            borrower_id=user.borrower_profile.id,
             status=status
         )
         return reservation
