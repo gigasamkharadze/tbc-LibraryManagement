@@ -167,8 +167,8 @@ REST_FRAMEWORK = {
     )
 }
 
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=7),
 }
 
 # Email settings
