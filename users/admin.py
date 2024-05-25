@@ -4,7 +4,8 @@ from users.models import User, Librarian, Borrower
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'email', 'personal_number', 'birth_date', 'is_active', 'is_staff', 'profile')
+    list_display = ('first_name', 'last_name', 'email', 'personal_number', 'birth_date', 'is_active', 'is_staff',
+                    'profile')
     list_filter = ('is_active', 'is_staff', 'profile')
 
     def save_model(self, request, obj, form, change):

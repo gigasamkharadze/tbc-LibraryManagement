@@ -101,7 +101,7 @@ def book(request, book_id):
         try:
             response = requests.get(f'http://localhost:8000/api/library/books/{book_id}/', headers=headers)
             response.raise_for_status()
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             return render(request, 'frontend/error.html', {
                 'message': 'An error occurred while fetching the book.'
             })
@@ -125,7 +125,7 @@ def reserve_book(request, book_id):
             response = requests.post(f'http://localhost:8000/api/library/books/{book_id}/reserve/',
                                      headers=headers)
             response.raise_for_status()
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             return render(request, 'frontend/error.html', {
                 'message': 'An error occurred while reserving the book.'
             })
@@ -137,4 +137,3 @@ def reserve_book(request, book_id):
                 'message': 'An error occurred while reserving the book.'
             })
     return redirect('login')
-

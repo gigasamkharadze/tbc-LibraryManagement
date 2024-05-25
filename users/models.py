@@ -53,7 +53,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Librarian(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='librarian_profile', verbose_name=_('user'))
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='librarian_profile',
+                                verbose_name=_('user'))
     position = models.CharField(max_length=2, choices=PositionChoices.choices, verbose_name=_('position'))
     description = models.TextField(verbose_name=_('description'))
     photo = models.ImageField(upload_to='librarian_photos', blank=True, null=True, verbose_name=_('photo'))
